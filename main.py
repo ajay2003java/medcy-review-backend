@@ -8,8 +8,8 @@ app = FastAPI(title=settings.PROJECT_NAME)
 # CORS config - allow frontend to connect
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, restrict to actual frontend URL
-    allow_credentials=True,
+    allow_origins=["*"], 
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
