@@ -12,17 +12,22 @@ def generate_review_draft(clinic_name: str, category: ClinicCategory, rating: in
     if not client:
         return f"I had a fantastic experience at {clinic_name}. The {category.value} team was highly professional and caring. Highly recommended!"
 
-    prompt = f"Write a short, highly positive, natural-sounding Google review (2-3 sentences) for a {category.value} clinic named {clinic_name}. The patient gave it a {rating}/5 star rating. Do not use hashtags."
+    prompt = (
+        f"Write a short, highly positive, and natural-sounding Google review (2-3 sentences) for a {category.value} clinic named {clinic_name}. "
+        f"The patient gave it a {rating}/5 star rating. "
+        f"CRITICAL: Ensure the review naturally includes strong SEO keywords related to {category.value} services (e.g., 'best {category.value} clinic', 'top treatments', 'highly recommended doctors'). "
+        f"Make it sound completely unique, personal, and different from a generic review. Do not use hashtags."
+    )
     
     try:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo", # or gpt-4
             messages=[
-                {"role": "system", "content": "You are a helpful assistant that writes brief, natural Google reviews for patients."},
+                {"role": "system", "content": "You are a helpful assistant that writes highly unique, varied, and SEO-optimized Google reviews for patients. Never generate the exact same review twice."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=60,
-            temperature=0.7
+            max_tokens=70,
+            temperature=0.9
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
