@@ -21,7 +21,11 @@ class Settings(BaseSettings):
     @property
     def get_database_url(self) -> str:
         if self.SQLALCHEMY_DATABASE_URI:
-            return self.SQLALCHEMY_DATABASE_URI
+            # Aggressively clean up copy-paste mistakes (like quotes or var names)
+            cleaned = self.SQLALCHEMY_DATABASE_URI.strip().strip('"').strip("'")
+            if cleaned.startswith("SQLALCHEMY_DATABASE_URI="):
+                cleaned = cleaned.replace("SQLALCHEMY_DATABASE_URI=", "").strip().strip('"').strip("'")
+            return cleaned
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
 settings = Settings()
