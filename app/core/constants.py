@@ -2,10 +2,10 @@ from enum import Enum
 
 class ClinicCategory(str, Enum):
     IVF = "IVF"
-    DERMATOLOGY = "DERMATOLOGY"
-    GYNECOLOGY = "GYNECOLOGY"
-    DENTIST = "DENTIST"
-    GENERAL_HOSPITAL = "GENERAL_HOSPITAL"
+    DERMATOLOGY = "Dermatology"
+    GYNECOLOGY = "Gynecology"
+    DENTIST = "Dentist"
+    GENERAL_HOSPITAL = "General Hospital"
 
 class ClinicStatus(str, Enum):
     ACTIVE = "ACTIVE"
