@@ -7,9 +7,9 @@ engine = create_engine(DB_URL)
 
 try:
     with engine.connect() as conn:
-        # Start a transaction
-        with conn.begin():
-            conn.execute(text("DELETE FROM clinic WHERE id != '0a7eb363-0e25-4fe8-adcb-02b862901a18';"))
-            print("Successfully deleted test clinics.")
+        result = conn.execute(text("SELECT id, name, logo_url, qr_identifier FROM clinic ORDER BY created_at DESC;")).fetchall()
+        print("Clinics in DB:")
+        for row in result:
+            print(f"Name: {row[1]}, Logo URL: {row[2]}, QR: {row[3]}")
 except Exception as e:
     print("Error:", e)
