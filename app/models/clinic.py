@@ -13,7 +13,7 @@ class Clinic(Base):
     logo_url = Column(String, nullable=True)
     theme_color = Column(String, nullable=False, default="#3498db")
     google_review_url = Column(String, nullable=False)
-    category = Column(Enum(ClinicCategory), nullable=False)
+    category = Column(Enum(ClinicCategory, values_callable=lambda obj: [e.value for e in obj]), nullable=False)
     status = Column(Enum(ClinicStatus), nullable=False, default=ClinicStatus.ACTIVE)
     qr_identifier = Column(String, unique=True, index=True, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
