@@ -5,7 +5,7 @@ from app.schemas.clinic import ClinicCreate
 
 db = SessionLocal()
 try:
-    c = ClinicCreate(name='T', category='Dentist', google_review_url='http://google.com', theme_color='#ffffff')
+    c = ClinicCreate(name='T', category='DENTIST', google_review_url='http://google.com', theme_color='#ffffff')
     create_clinic(db, c)
     print("Success")
 except Exception as e:
