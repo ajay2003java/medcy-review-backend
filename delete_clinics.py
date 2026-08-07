@@ -7,9 +7,8 @@ engine = create_engine(DB_URL)
 
 try:
     with engine.connect() as conn:
-        result = conn.execute(text("SELECT id, name, logo_url, qr_identifier FROM clinic ORDER BY created_at DESC;")).fetchall()
-        print("Clinics in DB:")
-        for row in result:
-            print(f"Name: {row[1]}, Logo URL: {row[2]}, QR: {row[3]}")
+        with conn.begin():
+            conn.execute(text("UPDATE clinic SET logo_url = 'https://plain-apac-prod-public.komododecks.com/202608/07/HC4TTimm9fPrPd7AivDZ/image.png' WHERE qr_identifier = 'e0f507f7';"))
+            print("Successfully fixed logo URL in database!")
 except Exception as e:
     print("Error:", e)
