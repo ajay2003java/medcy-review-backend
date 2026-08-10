@@ -43,3 +43,21 @@ CATEGORY_QUESTIONS = {
         "Did you find the hospital rooms and facilities completely clean?"
     ]
 }
+
+CATEGORY_SERVICES = {
+    ClinicCategory.IVF: [
+        "IVF Treatment", "IUI Treatment", "ICSI", "Egg Freezing", "Fertility Checkup"
+    ],
+    ClinicCategory.DERMATOLOGY: [
+        "Acne Treatment", "Laser Hair Removal", "Skin Consultation", "Botox / Fillers", "Scar Removal"
+    ],
+    ClinicCategory.GYNECOLOGY: [
+        "Pregnancy Checkup", "PCOS Treatment", "Ultrasound", "Menstrual Issues", "General Checkup"
+    ],
+    ClinicCategory.DENTIST: [
+        "Teeth Cleaning", "Root Canal", "Tooth Extraction", "Braces / Invisalign", "Teeth Whitening"
+    ],
+    ClinicCategory.GENERAL_HOSPITAL: [
+        "General Consultation", "Blood Test", "Emergency Care", "Surgery", "Vaccination"
+    ]
+}

@@ -4,7 +4,7 @@ from app.db.session import get_db
 from app.schemas.feedback import FeedbackCreate, FeedbackResponse
 from app.crud import crud_clinic, crud_feedback
 from app.services.ai_generator import generate_review_draft
-from app.core.constants import CATEGORY_QUESTIONS
+from app.core.constants import CATEGORY_QUESTIONS, CATEGORY_SERVICES
 
 router = APIRouter()
 
@@ -28,7 +28,8 @@ def get_clinic_by_qr(qr_identifier: str, db: Session = Depends(get_db)):
             "logo_url": None,
             "theme_color": "#ec4899" if category_str == "ivf" else "#8b5cf6" if category_str == "dermatology" else "#f43f5e" if category_str == "gynecology" else "#0ea5e9" if category_str == "dentist" else "#10b981",
             "category": category_enum,
-            "questions": CATEGORY_QUESTIONS.get(category_enum, [])
+            "questions": CATEGORY_QUESTIONS.get(category_enum, []),
+            "services": CATEGORY_SERVICES.get(category_enum, [])
         }
 
     clinic = crud_clinic.get_clinic_by_qr(db, qr_identifier)
@@ -43,7 +44,8 @@ def get_clinic_by_qr(qr_identifier: str, db: Session = Depends(get_db)):
         "logo_url": clinic.logo_url,
         "theme_color": clinic.theme_color,
         "category": clinic.category,
-        "questions": questions
+        "questions": questions,
+        "services": CATEGORY_SERVICES.get(clinic.category, [])
     }
 
 @router.post("/feedback", response_model=FeedbackResponse)
@@ -65,7 +67,7 @@ def submit_feedback(feedback: FeedbackCreate, db: Session = Depends(get_db)):
         # Fallback to general hospital enum if we don't know the demo category here
         # For full demo logic we could pass category, but this works for demo draft
         c_category = list(CATEGORY_QUESTIONS.keys())[0] if is_demo else clinic.category 
-        generated_draft = generate_review_draft(c_name, c_category, feedback.rating_score)
+        generated_draft = generate_review_draft(c_name, c_category, feedback.rating_score, feedback.service_received)
     
     if not is_demo:
         crud_feedback.create_feedback(

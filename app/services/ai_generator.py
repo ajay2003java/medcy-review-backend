@@ -5,16 +5,19 @@ from app.core.constants import ClinicCategory
 # Initialize only if API key is provided, otherwise mock it for testing
 client = OpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
 
-def generate_review_draft(clinic_name: str, category: ClinicCategory, rating: int) -> str:
+def generate_review_draft(clinic_name: str, category: ClinicCategory, rating: int, service_received: str = None) -> str:
     """
-    Generates a tailored review draft using AI based on the clinic category and rating.
+    Generates a tailored review draft using AI based on the clinic category, rating, and service received.
     """
     if not client:
-        return f"I had a fantastic experience at {clinic_name}. The {category.value} team was highly professional and caring. Highly recommended!"
+        service_text = f" for my {service_received} treatment" if service_received else ""
+        return f"I had a fantastic experience at {clinic_name}{service_text}. The {category.value} team was highly professional and caring. Highly recommended!"
+
+    service_context = f" The patient specifically received '{service_received}' as their treatment. " if service_received else " "
 
     prompt = (
         f"Write a short, highly positive, and natural-sounding Google review (2-3 sentences) for a {category.value} clinic named {clinic_name}. "
-        f"The patient gave it a {rating}/5 star rating. "
+        f"The patient gave it a {rating}/5 star rating.{service_context}"
         f"CRITICAL: Ensure the review naturally includes strong SEO keywords related to {category.value} services (e.g., 'best {category.value} clinic', 'top treatments', 'highly recommended doctors'). "
         f"Make it sound completely unique, personal, and different from a generic review. Do not use hashtags."
     )

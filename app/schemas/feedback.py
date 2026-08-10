@@ -11,6 +11,7 @@ class FeedbackBase(BaseModel):
 
 class FeedbackCreate(FeedbackBase):
     clinic_id: UUID
+    service_received: Optional[str] = None
 
 class Feedback(FeedbackBase):
     id: UUID
