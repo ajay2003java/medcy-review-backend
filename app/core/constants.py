@@ -46,7 +46,18 @@ CATEGORY_QUESTIONS = {
 
 CATEGORY_SERVICES = {
     ClinicCategory.IVF: [
-        "IVF Treatment", "IUI Treatment", "ICSI", "Egg Freezing", "Fertility Checkup"
+        "Intra Uterine Insemination (IUI)",
+        "In Vitro Fertilization (IVF)",
+        "Intra Cytoplasmic Sperm Injection (ICSI)",
+        "Intra Cytoplasmic Morphologic Sperm Injection (IMSI)",
+        "Testicular Sperm Aspiration/Extraction (TESA/TESE)",
+        "Oocyte Freezing",
+        "Semen Banking",
+        "Assisted Hatching",
+        "Preimplantation Genetic Screening",
+        "Vitrification",
+        "Embryo Donation",
+        "Oocyte Donation"
     ],
     ClinicCategory.DERMATOLOGY: [
         "Acne Treatment", "Laser Hair Removal", "Skin Consultation", "Botox / Fillers", "Scar Removal"
