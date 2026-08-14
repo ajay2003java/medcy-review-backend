@@ -11,6 +11,22 @@ class ClinicStatus(str, Enum):
     ACTIVE = "ACTIVE"
     DISABLED = "DISABLED"
 
+class InstituteCategory(str, Enum):
+    SCHOOL = "School"
+    JUNIOR_COLLEGE = "Junior College"
+    DEGREE_COLLEGE = "Degree College"
+    ENGINEERING_COLLEGE = "Engineering College"
+
+class InstituteStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    DISABLED = "DISABLED"
+
+class ReviewerRole(str, Enum):
+    PRESENT_STUDENT = "Present Student"
+    EX_STUDENT = "Ex-Student / Alumni"
+    PARENT = "Parent"
+    STAFF = "Staff"
+
 CATEGORY_QUESTIONS = {
     ClinicCategory.IVF: [
         "Did you feel fully supported by our fertility specialists during your visit?",
@@ -72,3 +88,47 @@ CATEGORY_SERVICES = {
         "General Consultation", "Blood Test", "Emergency Care", "Surgery", "Vaccination"
     ]
 }
+
+INSTITUTE_ROLE_QUESTIONS = {
+    ReviewerRole.PRESENT_STUDENT: [
+        "Are the faculty approachable and helpful?",
+        "Are the campus facilities and labs well-maintained?",
+        "Do you feel the curriculum effectively prepares you for exams?",
+        "Would you recommend this institute to other students?"
+    ],
+    ReviewerRole.EX_STUDENT: [
+        "Did the education here help you in your further career/studies?",
+        "Were the placement/guidance cell supportive?",
+        "Did you have a memorable and positive campus life?",
+        "Would you proudly recommend your alma mater?"
+    ],
+    ReviewerRole.PARENT: [
+        "Are you satisfied with the academic progress of your child?",
+        "Do you feel the campus environment is safe and secure?",
+        "Is the management transparent and easy to communicate with?",
+        "Would you recommend this institute to other parents?"
+    ],
+    ReviewerRole.STAFF: [
+        "Is the management supportive of your professional growth?",
+        "Do you find the work environment positive and collaborative?",
+        "Are the resources provided sufficient for effective teaching/working?",
+        "Would you recommend this institute as a great place to work?"
+    ]
+}
+
+INSTITUTE_SERVICES = {
+    InstituteCategory.SCHOOL: [
+        "Academics", "Sports", "Facilities", "Faculty", "Extracurriculars"
+    ],
+    InstituteCategory.JUNIOR_COLLEGE: [
+        "MPC", "BiPC", "MEC", "CEC", "JEE-Mains Coaching", "NEET Coaching", "EAPCET Coaching"
+    ],
+    InstituteCategory.DEGREE_COLLEGE: [
+        "B.Com", "B.Sc", "B.A", "BBA", "BCA"
+    ],
+    InstituteCategory.ENGINEERING_COLLEGE: [
+        "Computer Science (CSE)", "Electronics (ECE)", "Mechanical", "Civil", "Information Technology (IT)"
+    ]
+}
+
+

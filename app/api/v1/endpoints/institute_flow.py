@@ -1,0 +1,73 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from app.db.session import get_db
+from app.schemas.institute_feedback import InstituteFeedbackCreate, InstituteFeedbackResponse
+from app.crud import crud_institute, crud_institute_feedback
+from app.services.ai_generator import generate_institute_review_draft
+from app.core.constants import INSTITUTE_ROLE_QUESTIONS, INSTITUTE_SERVICES, InstituteCategory
+
+router = APIRouter()
+
+@router.get("/institute/{qr_identifier}")
+def get_institute_by_qr(qr_identifier: str, db: Session = Depends(get_db)):
+    if qr_identifier.startswith("demo-"):
+        return {
+            "id": "22222222-2222-2222-2222-222222222222",
+            "name": "Demo Junior College",
+            "logo_url": None,
+            "theme_color": "#10b981",
+            "category": "Junior College",
+            "questions": INSTITUTE_ROLE_QUESTIONS,
+            "services": INSTITUTE_SERVICES.get(InstituteCategory.JUNIOR_COLLEGE, [])
+        }
+
+    institute = crud_institute.get_institute_by_qr(db, qr_identifier)
+    if not institute:
+        raise HTTPException(status_code=404, detail="Institute not found")
+    
+    return {
+        "id": institute.id,
+        "name": institute.name,
+        "logo_url": institute.logo_url,
+        "theme_color": institute.theme_color,
+        "category": institute.category,
+        "questions": INSTITUTE_ROLE_QUESTIONS,
+        "services": INSTITUTE_SERVICES.get(institute.category, [])
+    }
+
+@router.post("/feedback", response_model=InstituteFeedbackResponse)
+def submit_institute_feedback(feedback: InstituteFeedbackCreate, db: Session = Depends(get_db)):
+    is_demo = str(feedback.institute_id) == "22222222-2222-2222-2222-222222222222"
+    
+    institute = None
+    if not is_demo:
+        institute = db.query(crud_institute.Institute).filter(crud_institute.Institute.id == feedback.institute_id).first()
+        if not institute:
+            raise HTTPException(status_code=404, detail="Institute not found")
+
+    is_positive = feedback.rating_score >= 4
+    generated_draft = None
+    action_flow = "POSITIVE" if is_positive else "PRIVATE"
+
+    if is_positive:
+        i_name = "Demo Institute" if is_demo else institute.name
+        generated_draft = generate_institute_review_draft(
+            institute_name=i_name, 
+            role=feedback.reviewer_role, 
+            rating=feedback.rating_score,
+            service_received=feedback.service_received
+        )
+    
+    if not is_demo:
+        crud_institute_feedback.create_institute_feedback(
+            db=db, 
+            feedback=feedback, 
+            generated_review=generated_draft, 
+            redirected=is_positive
+        )
+    
+    return InstituteFeedbackResponse(
+        action_flow=action_flow,
+        generated_review_draft=generated_draft,
+        google_url="https://g.page/r/demo" if is_demo and is_positive else (institute.google_review_url if is_positive else None)
+    )
