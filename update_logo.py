@@ -23,7 +23,7 @@ try:
                 print(f"Found institute: {inst.name} (QR: {inst.qr_identifier})")
                 conn.execute(
                     text("UPDATE institute SET logo_url = :logo_url WHERE id = :id"),
-                    {"logo_url": "https://kommodo.ai/i/j0WLmidDIs84I0JTcNMN", "id": inst.id}
+                    {"logo_url": "https://plain-apac-prod-public.komododecks.com/202608/17/j0WLmidDIs84I0JTcNMN/image.jpg", "id": inst.id}
                 )
                 print(f"Updated logo_url for {inst.name}")
 except Exception as e:
