@@ -51,11 +51,9 @@ def generate_institute_review_draft(institute_name: str, role: str, rating: int,
         f"Write a short, highly positive, and natural-sounding Google review (2-3 sentences) for an educational institute named {institute_name}. "
         f"The reviewer gave it a {rating}/5 star rating. "
         f"CRITICAL CONTEXT: The person writing the review is a '{role}'. "
-        f"If they are a Parent, it must sound like a proud parent whose child attends the school. "
-        f"If they are a Student or Alumni, it must sound like a student talking about their studies and campus life. "
-        f"If they are Staff, it must sound like an employee talking about the great work environment and management. "
+        f"IMPORTANT RULE: NEVER start the review with 'As a parent', 'As a student', or 'As an alumni'. The review MUST sound like a genuine, unique, real-world Google review. "
         f"{service_context}"
-        f"Make it sound completely unique, personal, and different from a generic review. Do not use hashtags."
+        f"Make it completely unique, varied, and conversational. Do not use hashtags."
     )
     
     try:
