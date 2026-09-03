@@ -12,18 +12,18 @@ engine = create_engine(DB_URL)
 
 try:
     with engine.begin() as conn:
-        # Check if the institute exists matching the qr_identifier
-        result = conn.execute(text("SELECT id, name, qr_identifier FROM institute WHERE qr_identifier LIKE '4be77d65%'"))
+        # Check if the institute exists matching the name
+        result = conn.execute(text("SELECT id, name, qr_identifier FROM institute WHERE name ILIKE '%basara%'"))
         institutes = result.fetchall()
         
         if not institutes:
-            print("No institute found with qr_identifier starting with '4be77d65'")
+            print("No institute found matching name")
         else:
             for inst in institutes:
                 print(f"Found institute: {inst.name} (QR: {inst.qr_identifier})")
                 conn.execute(
                     text("UPDATE institute SET logo_url = :logo_url WHERE id = :id"),
-                    {"logo_url": "https://plain-apac-prod-public.komododecks.com/202608/17/j0WLmidDIs84I0JTcNMN/image.jpg", "id": inst.id}
+                    {"logo_url": "https://plain-apac-prod-public.komododecks.com/202609/03/NgcbnRrEVe2pchily1Un/image.png", "id": inst.id}
                 )
                 print(f"Updated logo_url for {inst.name}")
 except Exception as e:
