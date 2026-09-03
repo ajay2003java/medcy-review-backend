@@ -23,7 +23,7 @@ try:
                 print(f"Found institute: {inst.name} (QR: {inst.qr_identifier})")
                 conn.execute(
                     text("UPDATE institute SET logo_url = :logo_url WHERE id = :id"),
-                    {"logo_url": "https://cdn.phototourl.com/free/2026-09-03-33628620-c6e1-4bdf-bd1f-63f09b88ee26.png", "id": inst.id}
+                    {"logo_url": "https://cdn.phototourl.com/free/2026-09-03-44b7a194-bdf1-4f14-bc47-db3e27dda1be.jpg", "id": inst.id}
                 )
                 print(f"Updated logo_url for {inst.name}")
 except Exception as e:
