@@ -3,14 +3,24 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.schemas.institute_feedback import InstituteFeedbackCreate, InstituteFeedbackResponse
 from app.crud import crud_institute, crud_institute_feedback
-from app.services.ai_generator import generate_institute_review_draft
-from app.core.constants import INSTITUTE_ROLE_QUESTIONS, INSTITUTE_SERVICES, InstituteCategory
+from app.services.ai_generator import generate_institute_review_draft, generate_review_draft
+from app.core.constants import INSTITUTE_ROLE_QUESTIONS, INSTITUTE_SERVICES, InstituteCategory, CATEGORY_QUESTIONS, ClinicCategory
 
 router = APIRouter()
 
 @router.get("/institute/{qr_identifier}")
 def get_institute_by_qr(qr_identifier: str, db: Session = Depends(get_db)):
     if qr_identifier.startswith("demo-"):
+        if qr_identifier == "demo-laboratory":
+            return {
+                "id": "22222222-2222-2222-2222-222222222222",
+                "name": "Demo Diagnostic Laboratory",
+                "logo_url": None,
+                "theme_color": "#10b981",
+                "category": "Laboratory",
+                "questions": CATEGORY_QUESTIONS.get(ClinicCategory.LABORATORY, []),
+                "services": INSTITUTE_SERVICES.get(InstituteCategory.LABORATORY, [])
+            }
         return {
             "id": "22222222-2222-2222-2222-222222222222",
             "name": "Demo Junior College",
@@ -25,13 +35,14 @@ def get_institute_by_qr(qr_identifier: str, db: Session = Depends(get_db)):
     if not institute:
         raise HTTPException(status_code=404, detail="Institute not found")
     
+    questions = CATEGORY_QUESTIONS.get(ClinicCategory.LABORATORY, []) if institute.category == InstituteCategory.LABORATORY else INSTITUTE_ROLE_QUESTIONS
     return {
         "id": institute.id,
         "name": institute.name,
         "logo_url": institute.logo_url,
         "theme_color": institute.theme_color,
         "category": institute.category,
-        "questions": INSTITUTE_ROLE_QUESTIONS,
+        "questions": questions,
         "services": INSTITUTE_SERVICES.get(institute.category, [])
     }
 
@@ -50,13 +61,22 @@ def submit_institute_feedback(feedback: InstituteFeedbackCreate, db: Session = D
     action_flow = "POSITIVE" if is_positive else "PRIVATE"
 
     if is_positive:
-        i_name = "Demo Institute" if is_demo else institute.name
-        generated_draft = generate_institute_review_draft(
-            institute_name=i_name, 
-            role=feedback.reviewer_role, 
-            rating=feedback.rating_score,
-            service_received=feedback.service_received
-        )
+        i_name = institute.name if institute else (feedback.institute_name or "Demo Institute")
+        i_cat = institute.category if institute else (feedback.category or (InstituteCategory.LABORATORY if not feedback.reviewer_role else InstituteCategory.JUNIOR_COLLEGE))
+        if i_cat == InstituteCategory.LABORATORY or not feedback.reviewer_role:
+            generated_draft = generate_review_draft(
+                clinic_name=i_name,
+                category=ClinicCategory.LABORATORY,
+                rating=feedback.rating_score,
+                service_received=feedback.service_received
+            )
+        else:
+            generated_draft = generate_institute_review_draft(
+                institute_name=i_name, 
+                role=feedback.reviewer_role, 
+                rating=feedback.rating_score,
+                service_received=feedback.service_received
+            )
     
     if not is_demo:
         crud_institute_feedback.create_institute_feedback(

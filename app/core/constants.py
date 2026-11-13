@@ -6,6 +6,7 @@ class ClinicCategory(str, Enum):
     GYNECOLOGY = "Gynecology"
     DENTIST = "Dentist"
     GENERAL_HOSPITAL = "General Hospital"
+    LABORATORY = "Laboratory"
 
 class ClinicStatus(str, Enum):
     ACTIVE = "ACTIVE"
@@ -16,6 +17,7 @@ class InstituteCategory(str, Enum):
     JUNIOR_COLLEGE = "Junior College"
     DEGREE_COLLEGE = "Degree College"
     ENGINEERING_COLLEGE = "Engineering College"
+    LABORATORY = "Laboratory"
 
 class InstituteStatus(str, Enum):
     ACTIVE = "ACTIVE"
@@ -57,6 +59,12 @@ CATEGORY_QUESTIONS = {
         "Did you feel well taken care of by the nursing and medical staff?",
         "Was the admission and discharge process smooth?",
         "Did you find the hospital rooms and facilities completely clean?"
+    ],
+    ClinicCategory.LABORATORY: [
+        "Did you receive your laboratory test reports within the promised time?",
+        "Was the laboratory clean, hygienic and well-maintained?",
+        "Were the reception and support staff friendly and helpful throughout your visit?",
+        "Did the laboratory staff make you feel comfortable and relaxed during blood collection and other tests?"
     ]
 }
 
@@ -86,6 +94,26 @@ CATEGORY_SERVICES = {
     ],
     ClinicCategory.GENERAL_HOSPITAL: [
         "General Consultation", "Blood Test", "Emergency Care", "Surgery", "Vaccination"
+    ],
+    ClinicCategory.LABORATORY: [
+        "Blood Tests",
+        "Urine Tests",
+        "Diabetes Tests",
+        "Full Body Checkup",
+        "Health Packages",
+        "ECG Test",
+        "X-Ray",
+        "Ultrasound Scan",
+        "Sample Collection at Home",
+        "Hormone Tests",
+        "Vitamin Tests",
+        "Microbiology Tests",
+        "Liver Function Test",
+        "Lipid Profile",
+        "Thyroid Test",
+        "Kidney Function Test",
+        "Pathology Tests",
+        "Other"
     ]
 }
 
@@ -128,6 +156,26 @@ INSTITUTE_SERVICES = {
     ],
     InstituteCategory.ENGINEERING_COLLEGE: [
         "Computer Science (CSE)", "Electronics (ECE)", "Mechanical", "Civil", "Information Technology (IT)"
+    ],
+    InstituteCategory.LABORATORY: [
+        "Blood Tests",
+        "Urine Tests",
+        "Diabetes Tests",
+        "Full Body Checkup",
+        "Health Packages",
+        "ECG Test",
+        "X-Ray",
+        "Ultrasound Scan",
+        "Sample Collection at Home",
+        "Hormone Tests",
+        "Vitamin Tests",
+        "Microbiology Tests",
+        "Liver Function Test",
+        "Lipid Profile",
+        "Thyroid Test",
+        "Kidney Function Test",
+        "Pathology Tests",
+        "Other"
     ]
 }
 

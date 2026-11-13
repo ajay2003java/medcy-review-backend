@@ -1,19 +1,24 @@
 from pydantic import BaseModel
 from uuid import UUID
-from typing import Optional
+from typing import Optional, Any
 from datetime import datetime
 from app.core.constants import ReviewerRole
 
 class InstituteFeedbackBase(BaseModel):
-    reviewer_role: ReviewerRole
+    reviewer_role: Optional[ReviewerRole] = None
     reviewer_name: Optional[str] = None
     reviewer_phone: Optional[str] = None
     rating_score: int
     service_received: Optional[str] = None
     private_feedback: Optional[str] = None
+    question_ratings: Optional[Any] = None
+    selected_services: Optional[list[str]] = None
+    language: Optional[str] = "en"
 
 class InstituteFeedbackCreate(InstituteFeedbackBase):
     institute_id: UUID
+    institute_name: Optional[str] = None
+    category: Optional[str] = None
 
 class InstituteFeedback(InstituteFeedbackBase):
     id: UUID

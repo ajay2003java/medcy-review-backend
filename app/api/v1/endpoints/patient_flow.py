@@ -18,13 +18,14 @@ def get_clinic_by_qr(qr_identifier: str, db: Session = Depends(get_db)):
             "dermatology": "Dermatology",
             "gynecology": "Gynecology",
             "dentist": "Dentist",
-            "general-hospital": "General Hospital"
+            "general-hospital": "General Hospital",
+            "laboratory": "Laboratory"
         }
         category_enum = category_map.get(category_str, "General Hospital")
         
         return {
             "id": "11111111-1111-1111-1111-111111111111",
-            "name": f"Demo {category_enum} Clinic",
+            "name": f"Demo {category_enum} Center" if category_enum == "Laboratory" else f"Demo {category_enum} Clinic",
             "logo_url": None,
             "theme_color": "#ec4899" if category_str == "ivf" else "#8b5cf6" if category_str == "dermatology" else "#f43f5e" if category_str == "gynecology" else "#0ea5e9" if category_str == "dentist" else "#10b981",
             "category": category_enum,
@@ -63,10 +64,8 @@ def submit_feedback(feedback: FeedbackCreate, db: Session = Depends(get_db)):
     action_flow = "POSITIVE" if is_positive else "PRIVATE"
 
     if is_positive:
-        c_name = "Demo Clinic" if is_demo else clinic.name
-        # Fallback to general hospital enum if we don't know the demo category here
-        # For full demo logic we could pass category, but this works for demo draft
-        c_category = list(CATEGORY_QUESTIONS.keys())[0] if is_demo else clinic.category 
+        c_name = clinic.name if clinic else (feedback.clinic_name or "Demo Clinic")
+        c_category = clinic.category if clinic else (feedback.category or list(CATEGORY_QUESTIONS.keys())[0])
         generated_draft = generate_review_draft(c_name, c_category, feedback.rating_score, feedback.service_received)
     
     if not is_demo:

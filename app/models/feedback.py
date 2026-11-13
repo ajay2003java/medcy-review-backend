@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String, Integer, Text, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, Text, Boolean, DateTime, ForeignKey, JSON
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -16,5 +16,9 @@ class Feedback(Base):
     generated_review_draft = Column(Text, nullable=True)
     redirected_to_google = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    question_ratings = Column(JSON, nullable=True)
+    selected_services = Column(JSON, nullable=True)
+    language = Column(String, nullable=True, default="en")
+    service_received = Column(String, nullable=True)
 
     clinic = relationship("Clinic", back_populates="feedbacks")
