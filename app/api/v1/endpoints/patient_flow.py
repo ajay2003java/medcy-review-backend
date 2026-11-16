@@ -5,6 +5,7 @@ from app.schemas.feedback import FeedbackCreate, FeedbackResponse
 from app.crud import crud_clinic, crud_feedback
 from app.services.ai_generator import generate_review_draft
 from app.core.constants import CATEGORY_QUESTIONS, CATEGORY_SERVICES
+from app.core.image_resolver import resolve_image_url
 
 router = APIRouter()
 
@@ -42,7 +43,7 @@ def get_clinic_by_qr(qr_identifier: str, db: Session = Depends(get_db)):
     return {
         "id": clinic.id,
         "name": clinic.name,
-        "logo_url": clinic.logo_url,
+        "logo_url": resolve_image_url(clinic.logo_url) if clinic.logo_url else None,
         "theme_color": clinic.theme_color,
         "category": clinic.category,
         "questions": questions,

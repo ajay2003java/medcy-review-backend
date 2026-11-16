@@ -12,19 +12,24 @@ engine = create_engine(DB_URL)
 
 try:
     with engine.begin() as conn:
-        # Check if the institute exists matching the qr_identifier
-        result = conn.execute(text("SELECT id, name, qr_identifier FROM institute WHERE qr_identifier LIKE 'f6f277e6%'"))
-        institutes = result.fetchall()
-        
-        if not institutes:
-            print("No institute found with qr_identifier starting with 'f6f277e6'")
-        else:
-            for inst in institutes:
-                print(f"Found institute: {inst.name} (QR: {inst.qr_identifier})")
-                conn.execute(
-                    text("UPDATE institute SET logo_url = :logo_url WHERE id = :id"),
-                    {"logo_url": "https://cdn.phototourl.com/free/2026-09-03-44b7a194-bdf1-4f14-bc47-db3e27dda1be.jpg", "id": inst.id}
-                )
-                print(f"Updated logo_url for {inst.name}")
+        # Update sms diagnostic center
+        res = conn.execute(
+            text("UPDATE clinic SET logo_url = :url WHERE qr_identifier = :qr RETURNING id, name, qr_identifier, logo_url"),
+            {
+                "url": "https://plain-apac-prod-public.komododecks.com/202611/16/p3NyglOoQsrkeA1M6z5T/image.png",
+                "qr": "aef79f18"
+            }
+        )
+        print("Updated clinic:", res.fetchall())
+
+        # Update bansal junior college
+        res2 = conn.execute(
+            text("UPDATE institute SET logo_url = :url WHERE qr_identifier = :qr RETURNING id, name, qr_identifier, logo_url"),
+            {
+                "url": "https://plain-apac-prod-public.komododecks.com/202608/17/j0WLmidDIs84I0JTcNMN/image.jpg",
+                "qr": "de50e3c3"
+            }
+        )
+        print("Updated institute:", res2.fetchall())
 except Exception as e:
     print(f"Error: {e}")

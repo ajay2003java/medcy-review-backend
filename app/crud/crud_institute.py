@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.institute import Institute
 from app.schemas.institute import InstituteCreate
+from app.core.image_resolver import resolve_image_url
 import uuid
 
 def get_institute_by_qr(db: Session, qr_identifier: str):
@@ -8,9 +9,10 @@ def get_institute_by_qr(db: Session, qr_identifier: str):
 
 def create_institute(db: Session, institute: InstituteCreate):
     qr_id = str(uuid.uuid4())[:8]
+    resolved_logo = resolve_image_url(institute.logo_url) if institute.logo_url else None
     db_institute = Institute(
         name=institute.name,
-        logo_url=institute.logo_url,
+        logo_url=resolved_logo,
         theme_color=institute.theme_color,
         google_review_url=institute.google_review_url,
         category=institute.category,

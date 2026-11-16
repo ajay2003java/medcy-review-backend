@@ -5,6 +5,7 @@ from app.schemas.institute_feedback import InstituteFeedbackCreate, InstituteFee
 from app.crud import crud_institute, crud_institute_feedback
 from app.services.ai_generator import generate_institute_review_draft, generate_review_draft
 from app.core.constants import INSTITUTE_ROLE_QUESTIONS, INSTITUTE_SERVICES, InstituteCategory, CATEGORY_QUESTIONS, ClinicCategory
+from app.core.image_resolver import resolve_image_url
 
 router = APIRouter()
 
@@ -39,7 +40,7 @@ def get_institute_by_qr(qr_identifier: str, db: Session = Depends(get_db)):
     return {
         "id": institute.id,
         "name": institute.name,
-        "logo_url": institute.logo_url,
+        "logo_url": resolve_image_url(institute.logo_url) if institute.logo_url else None,
         "theme_color": institute.theme_color,
         "category": institute.category,
         "questions": questions,
