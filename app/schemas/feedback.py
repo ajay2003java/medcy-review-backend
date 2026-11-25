@@ -8,6 +8,7 @@ class FeedbackBase(BaseModel):
     patient_phone: Optional[str] = None
     rating_score: int
     private_feedback: Optional[str] = None
+    doctor_name: Optional[str] = None
 
 class FeedbackCreate(FeedbackBase):
     clinic_id: UUID

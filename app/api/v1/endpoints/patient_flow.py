@@ -11,6 +11,59 @@ router = APIRouter()
 
 @router.get("/clinic/{qr_identifier}")
 def get_clinic_by_qr(qr_identifier: str, db: Session = Depends(get_db)):
+    if qr_identifier in ["kishore", "bhavana", "kishore-bhavana"]:
+        is_kishore = qr_identifier == "kishore"
+        is_bhavana = qr_identifier == "bhavana"
+        doctor_name = "Dr. Kishore" if is_kishore else ("Dr. Bhavana" if is_bhavana else None)
+        specialty = "Orthopedician" if is_kishore else ("Pediatrician" if is_bhavana else "Multi-Specialty")
+        category_name = "Orthopedics" if is_kishore else ("Pediatrics" if is_bhavana else "General Hospital")
+        
+        ortho_questions = [
+            "Were you satisfied with Dr. Kishore's orthopedic consultation and treatment plan?",
+            "Did the doctor explain your diagnosis and recovery clearly?",
+            "Was the clinic environment clean, hygienic and well-maintained?",
+            "Did the doctor listen attentively to your pain concerns and perform a thorough examination?"
+        ]
+        pedia_questions = [
+            "Did Dr. Bhavana make your child feel comfortable and well-cared for during the visit?",
+            "Did the doctor explain your child's diagnosis and treatment clearly?",
+            "Was the clinic environment child-friendly, clean and hygienic?",
+            "Were the reception and nursing staff gentle, polite and helpful?"
+        ]
+        ortho_services = [
+            "Joint & Knee Pain", "Fracture Care", "Spine & Back Care",
+            "Arthritis Treatment", "Sports Injury", "Bone Density Check",
+            "General Orthopedic Consultation"
+        ]
+        pedia_services = [
+            "Child Vaccination", "Newborn & Infant Care", "Growth & Nutrition",
+            "Fever & Infection Care", "Asthma & Allergy Care", "Child Health Checkup",
+            "General Pediatric Consultation"
+        ]
+        
+        clinic = db.query(crud_clinic.Clinic).filter(
+            (crud_clinic.Clinic.qr_identifier == "kishore-bhavana") | 
+            (crud_clinic.Clinic.id == "b0101010-b010-b010-b010-b01010101010")
+        ).first()
+        
+        clinic_id = str(clinic.id) if clinic else "b0101010-b010-b010-b010-b01010101010"
+        google_url = clinic.google_review_url if clinic else "https://search.google.com/local/writereview?placeid=ChIJ_kishore_bhavana_clinic"
+        
+        return {
+            "id": clinic_id,
+            "clinic_id": clinic_id,
+            "name": "Kishore Bhavana Clinic",
+            "doctor_name": doctor_name,
+            "specialty": specialty,
+            "logo_url": clinic.logo_url if clinic else None,
+            "theme_color": "#0284c7",
+            "category": category_name,
+            "google_review_url": google_url,
+            "isDoctorClinic": True,
+            "questions": ortho_questions if is_kishore else (pedia_questions if is_bhavana else ortho_questions),
+            "services": ortho_services if is_kishore else (pedia_services if is_bhavana else ortho_services)
+        }
+
     if qr_identifier.startswith("demo-"):
         category_str = qr_identifier.replace("demo-", "")
         # Map string back to Enum
@@ -67,7 +120,13 @@ def submit_feedback(feedback: FeedbackCreate, db: Session = Depends(get_db)):
     if is_positive:
         c_name = clinic.name if clinic else (feedback.clinic_name or "Demo Clinic")
         c_category = clinic.category if clinic else (feedback.category or list(CATEGORY_QUESTIONS.keys())[0])
-        generated_draft = generate_review_draft(c_name, c_category, feedback.rating_score, feedback.service_received)
+        generated_draft = generate_review_draft(
+            clinic_name=c_name, 
+            category=c_category, 
+            rating=feedback.rating_score, 
+            service_received=feedback.service_received,
+            doctor_name=feedback.doctor_name
+        )
     
     if not is_demo:
         crud_feedback.create_feedback(
@@ -77,8 +136,11 @@ def submit_feedback(feedback: FeedbackCreate, db: Session = Depends(get_db)):
             redirected=is_positive
         )
     
+    # Ensure patients have equal opportunity to post reviews on Google regardless of score
+    g_url = clinic.google_review_url if clinic else ("https://g.page/r/demo" if is_demo else None)
+    
     return FeedbackResponse(
         action_flow=action_flow,
         generated_review_draft=generated_draft,
-        google_url="https://g.page/r/demo" if is_demo and is_positive else (clinic.google_review_url if is_positive else None)
+        google_url=g_url
     )

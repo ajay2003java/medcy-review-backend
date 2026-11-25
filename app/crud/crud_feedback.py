@@ -18,7 +18,8 @@ def create_feedback(db: Session, feedback: FeedbackCreate, generated_review: str
         question_ratings=feedback.question_ratings,
         selected_services=feedback.selected_services,
         language=feedback.language or "en",
-        service_received=services_str
+        service_received=services_str,
+        doctor_name=feedback.doctor_name
     )
     db.add(db_feedback)
     db.commit()

@@ -14,6 +14,7 @@ class InstituteFeedbackBase(BaseModel):
     question_ratings: Optional[Any] = None
     selected_services: Optional[list[str]] = None
     language: Optional[str] = "en"
+    doctor_name: Optional[str] = None
 
 class InstituteFeedbackCreate(InstituteFeedbackBase):
     institute_id: UUID

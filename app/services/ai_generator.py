@@ -16,6 +16,10 @@ def normalize_category(category: Union[ClinicCategory, str]) -> str:
         cat_str = str(category).strip()
     
     cat_lower = cat_str.lower().replace('-', ' ').replace('_', ' ')
+    if 'ortho' in cat_lower or 'bone' in cat_lower or 'joint' in cat_lower:
+        return 'Orthopedics'
+    if 'pedia' in cat_lower or 'child' in cat_lower:
+        return 'Pediatrics'
     if 'dermatol' in cat_lower or 'skin' in cat_lower:
         return 'Dermatology'
     if 'ivf' in cat_lower or 'fertil' in cat_lower:
@@ -38,15 +42,89 @@ def clean_service_phrase(service: Optional[str]) -> str:
         s = s[6:].strip()
     if not s:
         return ""
-    # If comma-separated, join with 'and' for natural English
-    parts = [p.strip() for p in s.split(",") if p.strip()]
-    if len(parts) == 1:
-        return parts[0]
-    elif len(parts) == 2:
-        return f"{parts[0]} and {parts[1]}"
-    elif len(parts) > 2:
-        return f"{', '.join(parts[:-1])}, and {parts[-1]}"
-    return s
+    raw_parts = [p.strip() for p in s.split(",") if p.strip()]
+    formatted = []
+    for part in raw_parts:
+        l = part.lower()
+        if l == 'newborn & infant care':
+            formatted.append('newborn and infant care')
+        elif l == 'child vaccination':
+            formatted.append("our child's vaccination")
+        elif l == 'growth & nutrition':
+            formatted.append('child growth and nutrition')
+        elif l == 'fever & infection care':
+            formatted.append('fever and infection care')
+        elif l == 'asthma & allergy care':
+            formatted.append('asthma and allergy care')
+        elif l == 'child health checkup':
+            formatted.append('a routine child checkup')
+        elif l == 'general pediatric consultation':
+            formatted.append('pediatric consultation')
+        elif l == 'joint & knee pain':
+            formatted.append('joint and knee pain')
+        elif l == 'fracture care':
+            formatted.append('fracture care')
+        elif l == 'spine & back care':
+            formatted.append('spine and back care')
+        elif l == 'arthritis treatment':
+            formatted.append('arthritis care')
+        elif l == 'sports injury':
+            formatted.append('a sports injury')
+        elif l == 'bone density check':
+            formatted.append('a bone density check')
+        elif l == 'general orthopedic consultation':
+            formatted.append('orthopedic consultation')
+        elif l == 'full body checkup':
+            formatted.append('a full body checkup')
+        elif l == 'health packages':
+            formatted.append('a comprehensive health checkup package')
+        elif l == 'blood tests':
+            formatted.append('blood tests')
+        elif l == 'urine tests':
+            formatted.append('urine tests')
+        elif l == 'thyroid profile':
+            formatted.append('a thyroid profile test')
+        elif l == 'diabetes tests':
+            formatted.append('diabetes testing')
+        elif l == 'lipid profile':
+            formatted.append('a lipid profile test')
+        elif l == 'liver function test':
+            formatted.append('a liver function test')
+        elif l == 'kidney function test':
+            formatted.append('a kidney function test')
+        elif l == 'hormone tests':
+            formatted.append('hormone tests')
+        elif l == 'vitamin tests':
+            formatted.append('vitamin tests')
+        elif l == 'microbiology tests':
+            formatted.append('microbiology tests')
+        elif l == 'pathology tests':
+            formatted.append('pathology tests')
+        elif l == 'ecg test':
+            formatted.append('an ECG test')
+        elif l == 'x-ray':
+            formatted.append('an X-ray')
+        elif l == 'ultrasound scan':
+            formatted.append('an ultrasound scan')
+        elif l == 'sample collection at home':
+            formatted.append('home sample collection')
+        else:
+            formatted.append(part.lower())
+
+    if len(formatted) == 1:
+        joined = formatted[0]
+    elif len(formatted) == 2:
+        joined = f"{formatted[0]} and {formatted[1]}"
+    elif len(formatted) > 2:
+        joined = f"{', '.join(formatted[:-1])}, and {formatted[-1]}"
+    else:
+        joined = ""
+
+    return joined
+
+def format_service_phrase(service: Optional[str]) -> str:
+    cleaned = clean_service_phrase(service)
+    return f" for {cleaned}" if cleaned else ""
 
 # --- Ultra-Diverse Combinatorial SEO Engine for GBP Ranking ---
 CATEGORY_SEO_TEMPLATES = {
@@ -253,6 +331,137 @@ CATEGORY_SEO_TEMPLATES = {
             "World-class doctors, clean hospital premises, and caring nurses. Highly recommend {clinic_name}!",
             "Top-tier hospital with dedicated medical professionals. Truly grateful to {clinic_name}."
         ]
+    },
+    'Orthopedics': {
+        'openers': [
+            "I visited {clinic_name}{service_phrase} and received outstanding orthopedic care.",
+            "If you are looking for the best orthopedician, {clinic_name} is the top choice.",
+            "Consulting {clinic_name}{service_phrase} was one of the best healthcare decisions for my joint and bone health.",
+            "Had an exceptional experience at {clinic_name}{service_phrase} with quick relief from pain.",
+            "I highly recommend {clinic_name}{service_phrase} for anyone dealing with bone, joint, or spine issues.",
+            "My consultation at {clinic_name}{service_phrase} was smooth, reassuring, and gave me great results.",
+            "Hands down the top orthopedic clinic in town — {clinic_name} provides world-class care.",
+            "From check-in to examination, my experience at {clinic_name}{service_phrase} was top-tier."
+        ],
+        'middles': [
+            "The orthopedic diagnosis was accurate and the treatment plan was explained with immense clarity and practical recovery steps.",
+            "The doctors were extremely patient, gentle during examinations, and focused on lasting joint mobility and strength.",
+            "The clinic is spotless, hygienic, and equipped with modern orthopedic examination facilities.",
+            "The supportive staff ensured a smooth, comfortable consultation without any unnecessary waiting time.",
+            "I noticed significant improvement in my movement and pain relief much sooner than expected.",
+            "Every step of the treatment and home exercises was explained with genuine care and patience."
+        ],
+        'closers': [
+            "Easily the best orthopedic clinic in town — 5 stars for {clinic_name}!",
+            "I wholeheartedly recommend {clinic_name} for reliable and compassionate orthopedic treatment.",
+            "Outstanding bone and joint care with a personal touch. Thank you, {clinic_name}!",
+            "Will always trust {clinic_name} for any future orthopedic needs. 10/10!",
+            "Top-notch orthopedic treatment and wonderful staff. Highly recommended!"
+        ]
+    },
+    'Pediatrics': {
+        'openers': [
+            "I brought my child to {clinic_name}{service_phrase} and had a wonderful experience.",
+            "If you are searching for the best pediatrician, {clinic_name} is second to none.",
+            "Consulting the pediatric specialists at {clinic_name}{service_phrase} was an incredibly reassuring experience for our family.",
+            "Had a great pediatric visit at {clinic_name}{service_phrase} with gentle, caring attention.",
+            "We cannot thank the doctors at {clinic_name} enough for taking such wonderful care of our child{service_phrase}.",
+            "Visiting {clinic_name}{service_phrase} made my child completely comfortable and happy.",
+            "Hands down the top children's clinic in town — {clinic_name} is simply the best.",
+            "My experience at {clinic_name}{service_phrase} exceeded all expectations for pediatric care."
+        ],
+        'middles': [
+            "The pediatrician was so gentle, patient, and made my child feel completely safe and at ease throughout the checkup.",
+            "The doctor explained the diagnosis, nutrition, and vaccination schedule with great patience and clarity.",
+            "The clinic environment is clean, child-friendly, hygienic, and very welcoming for families.",
+            "The nursing staff was so polite, welcoming, and handled the procedures with extreme tenderness.",
+            "We received practical guidance on child development and healthy recovery with genuine care.",
+            "The doctor listened attentively to all our parenting questions without rushing."
+        ],
+        'closers': [
+            "Easily the best pediatrician and child clinic around — 5 stars for {clinic_name}!",
+            "I strongly recommend {clinic_name} to every parent seeking the best care for their children.",
+            "A trustworthy child clinic with truly compassionate doctors. Thank you, {clinic_name}!",
+            "10/10 recommendation for {clinic_name} — the most caring pediatricians in the city.",
+            "Wonderful experience for my little one. Look no further than {clinic_name} for child healthcare!"
+        ]
+    }
+}
+
+DOCTOR_SEO_TEMPLATES = {
+    'Pediatrics': {
+        'openers': [
+            "I brought my child to {clinic_name}{service_phrase} and consulted {doctor_name}.",
+            "If you are searching for the best pediatrician, {doctor_name} at {clinic_name} is second to none.",
+            "Consulting {doctor_name} at {clinic_name}{service_phrase} was an incredibly reassuring experience for our family.",
+            "Had a wonderful pediatric visit with {doctor_name} at {clinic_name}{service_phrase}.",
+            "Visiting {clinic_name} to consult {doctor_name}{service_phrase} was the best healthcare decision for our little one.",
+            "{doctor_name} at {clinic_name} provides truly compassionate, top-tier pediatric care{service_phrase}.",
+            "From the moment we arrived at {clinic_name}{service_phrase}, {doctor_name} treated our child with exceptional warmth and care.",
+            "I booked an appointment with {doctor_name} at {clinic_name}{service_phrase} and the experience was truly five-star."
+        ],
+        'middles': [
+            "{doctor_name} was remarkably gentle, patient, and made our little one feel completely safe throughout the checkup.",
+            "{doctor_name} listened attentively to all our parenting questions without rushing and explained the diagnosis with great clarity.",
+            "The clinic is spotlessly clean, child-friendly, and {doctor_name}'s calm bedside manner instantly put our baby at ease.",
+            "{doctor_name} gave us clear guidance on medication, nutrition, and recovery steps that worked wonders for our child.",
+            "The nursing staff was polite and caring, and {doctor_name}'s thorough examination gave our family complete peace of mind.",
+            "We truly appreciate how {doctor_name} took the time to answer every doubt with immense patience and medical expertise."
+        ],
+        'closers': [
+            "Easily the best child specialist in town — 5 stars for {doctor_name} and {clinic_name}!",
+            "I strongly recommend {doctor_name} to every parent seeking the best, most compassionate care for their children.",
+            "A truly wonderful child clinic with dedicated doctors. Thank you, {doctor_name} and {clinic_name}!",
+            "10/10 recommendation for {clinic_name} — {doctor_name} is our family's most trusted child specialist.",
+            "Heartfelt gratitude to {doctor_name} and the team at {clinic_name} for their fantastic support.",
+            "Wonderful experience for our little one. Look no further than {clinic_name} for pediatric care!"
+        ]
+    },
+    'Orthopedics': {
+        'openers': [
+            "I consulted {doctor_name} at {clinic_name}{service_phrase} and received outstanding orthopedic care.",
+            "If you are looking for an experienced and trustworthy orthopedician, {doctor_name} at {clinic_name} is the top choice.",
+            "Visiting {clinic_name} to consult {doctor_name}{service_phrase} was one of the best healthcare decisions I have made.",
+            "Had an exceptional consultation with {doctor_name} at {clinic_name}{service_phrase} and experienced prompt pain relief.",
+            "{doctor_name} at {clinic_name} provides top-tier orthopedic diagnosis and evidence-based treatment{service_phrase}.",
+            "My experience consulting {doctor_name} at {clinic_name}{service_phrase} was smooth, reassuring, and gave me great recovery results.",
+            "Hands down the top orthopedic specialist around — {doctor_name} at {clinic_name} provides world-class bone and joint care.",
+            "I booked an appointment with {doctor_name} at {clinic_name}{service_phrase} and the clinical attention was remarkable."
+        ],
+        'middles': [
+            "{doctor_name} listened attentively to my pain concerns, performed a thorough physical examination, and explained the root cause clearly.",
+            "{doctor_name} took the time to explain my recovery roadmap without rushing into unnecessary tests or procedures.",
+            "The clinic is modern, hygienic, and {doctor_name}'s personalized treatment and exercise guidance helped restore my mobility rapidly.",
+            "I felt completely reassured by {doctor_name}'s clinical expertise, honest advice, and warm, patient demeanor.",
+            "Every step of my recovery plan and medication was explained with immense clarity and practical daily care tips.",
+            "The supportive staff ensured a prompt consultation and {doctor_name} addressed all my questions with genuine care."
+        ],
+        'closers': [
+            "Easily the best orthopedic doctor in town — 5 stars for {doctor_name} and {clinic_name}!",
+            "I wholeheartedly recommend {doctor_name} to anyone dealing with joint, spine, or bone pain.",
+            "A dedicated orthopedic specialist who truly cares about patient recovery. Thank you, {doctor_name}!",
+            "10/10 recommendation for {clinic_name} — {doctor_name} gave me lasting pain relief and renewed mobility.",
+            "Outstanding clinical care with a personal touch. Will always trust {doctor_name} and {clinic_name} for orthopedic needs.",
+            "Top-notch orthopedic care and wonderful clinic environment. Highly recommended!"
+        ]
+    },
+    'General': {
+        'openers': [
+            "I consulted {doctor_name} at {clinic_name}{service_phrase} and received outstanding medical care.",
+            "Visiting {clinic_name} to see {doctor_name}{service_phrase} was a reassuring and positive healthcare experience.",
+            "{doctor_name} at {clinic_name} is an exceptional doctor who truly prioritizes patient wellbeing{service_phrase}.",
+            "Had a wonderful consultation with {doctor_name} at {clinic_name}{service_phrase}."
+        ],
+        'middles': [
+            "{doctor_name} was thorough, attentive, and explained the entire treatment plan with great clarity.",
+            "The clinic is clean, well-managed, and {doctor_name} took adequate time to answer all my questions.",
+            "{doctor_name}'s compassionate bedside manner and clinical expertise gave me complete confidence."
+        ],
+        'closers': [
+            "Easily a 5-star experience — highly recommend {doctor_name} and {clinic_name}!",
+            "I wholeheartedly recommend {doctor_name} to anyone seeking trustworthy medical advice.",
+            "Thank you to {doctor_name} and the staff at {clinic_name} for their wonderful care!"
+        ]
     }
 }
 
@@ -319,40 +528,60 @@ INSTITUTE_SEO_TEMPLATES = {
     }
 }
 
-def generate_combinatorial_review(clinic_name: str, category_key: str, service_received: Optional[str] = None) -> str:
+def generate_combinatorial_review(clinic_name: str, category_key: str, service_received: Optional[str] = None, doctor_name: Optional[str] = None) -> str:
     """
     Deterministically random combinatorial generator ensuring EVERY review is unique,
-    naturally weaves in the exact clinic_name (e.g. ABC Hospital),
+    naturally weaves in the exact clinic_name (e.g. Kishore Bhavana Clinic),
     embeds high-intent GBP SEO keywords for that specific category,
-    and integrates the specific service received.
+    integrates the specific service received naturally, and highlights doctor_name if provided.
     """
-    templates = CATEGORY_SEO_TEMPLATES.get(category_key, CATEGORY_SEO_TEMPLATES['General Hospital'])
+    has_doctor = bool(doctor_name and doctor_name.strip())
+    if has_doctor:
+        templates = DOCTOR_SEO_TEMPLATES.get(category_key, DOCTOR_SEO_TEMPLATES['General'])
+    else:
+        templates = CATEGORY_SEO_TEMPLATES.get(category_key, CATEGORY_SEO_TEMPLATES['General Hospital'])
     
-    clean_service = clean_service_phrase(service_received)
-    service_phrase = f" for my {clean_service}" if clean_service else ""
+    service_phrase = format_service_phrase(service_received)
+    doc_name_clean = doctor_name.strip() if doctor_name else ""
     
     opener_raw = random.choice(templates['openers'])
     middle_raw = random.choice(templates['middles'])
     closer_raw = random.choice(templates['closers'])
     
-    # Format with parameters
-    opener = opener_raw.format(clinic_name=clinic_name, service_phrase=service_phrase)
-    middle = middle_raw.format(clinic_name=clinic_name, service_phrase=service_phrase)
-    closer = closer_raw.format(clinic_name=clinic_name, service_phrase=service_phrase)
+    # Format with parameters safely
+    safe_params = {
+        'clinic_name': clinic_name,
+        'service_phrase': service_phrase,
+        'doctor_name': doc_name_clean
+    }
+    
+    try:
+        opener = opener_raw.format(**safe_params)
+    except KeyError:
+        opener = opener_raw.format(clinic_name=clinic_name, service_phrase=service_phrase)
+
+    try:
+        middle = middle_raw.format(**safe_params)
+    except KeyError:
+        middle = middle_raw.format(clinic_name=clinic_name, service_phrase=service_phrase)
+
+    try:
+        closer = closer_raw.format(**safe_params)
+    except KeyError:
+        closer = closer_raw.format(clinic_name=clinic_name, service_phrase=service_phrase)
     
     # 25% chance of 2-sentence punchy review vs 75% 3-sentence detailed review
     if random.random() < 0.25:
-        # If opener already has the service, pair with closer
         return f"{opener} {closer}"
     
     return f"{opener} {middle} {closer}"
 
-def generate_review_draft(clinic_name: str, category: Union[ClinicCategory, str], rating: int, service_received: Optional[str] = None) -> str:
+def generate_review_draft(clinic_name: str, category: Union[ClinicCategory, str], rating: int, service_received: Optional[str] = None, doctor_name: Optional[str] = None) -> str:
     """
     Generates a tailored, unique review draft using AI (OpenAI gpt-4o-mini) with an ultra-diverse 
     local SEO combinatorial fallback engine.
     Ensures that every submission produces a completely different review, tailored to the clinic name,
-    category, and services for maximum Google Business Profile (GBP) ranking.
+    category, doctor, and services for maximum Google Business Profile (GBP) ranking.
     """
     cat_key = normalize_category(category)
     clean_service = clean_service_phrase(service_received)
@@ -360,16 +589,17 @@ def generate_review_draft(clinic_name: str, category: Union[ClinicCategory, str]
     global openai_quota_exhausted_until
     # If no OpenAI client or key, or quota exhausted cooloff active, use the ultra-diverse combinatorial SEO engine directly
     if not client or time.time() < openai_quota_exhausted_until:
-        return generate_combinatorial_review(clinic_name, cat_key, clean_service)
+        return generate_combinatorial_review(clinic_name, cat_key, clean_service, doctor_name)
     
     service_context = f" The patient specifically received '{clean_service}'. " if clean_service else " "
+    doctor_context = f" The patient was treated by '{doctor_name}'. Naturally include {doctor_name} in the review (e.g. '{doctor_name} at {clinic_name}'). Never use awkward phrasing like '{clinic_name} with {doctor_name}'. " if doctor_name else " "
     
     prompt = (
         f"Write a short, highly persuasive, authentic, and natural-sounding 5-star Google review (2-3 sentences) for '{clinic_name}', which is a premier {cat_key} center. "
-        f"The patient rated their experience {rating}/5 stars.{service_context}"
+        f"The patient rated their experience {rating}/5 stars.{service_context}{doctor_context}"
         f"MANDATORY LOCAL SEO INSTRUCTIONS FOR GOOGLE BUSINESS PROFILE (GBP) LOCAL RANKING: "
         f"1. Explicitly mention the name '{clinic_name}' naturally in the review. "
-        f"2. Seamlessly incorporate high-intent local SEO keywords relevant to {cat_key} (e.g. for Dermatology: 'best dermatologist', 'top skin specialist', 'skin clinic'; for Laboratory: 'accurate diagnostic lab', 'painless blood test reports', 'pathology center'; for Hospital: 'best multi-specialty hospital'). "
+        f"2. Seamlessly incorporate high-intent local SEO keywords relevant to {cat_key}. "
         f"3. Highlight specific patient value: gentle procedure, clean facility, prompt reports, skilled doctors, or short wait times. "
         f"4. VARIATION DIRECTIVE: Craft a fresh, unique review with a distinct sentence structure. Avoid generic clichés and never start reviews the same way. Do not include hashtags or quotes."
     )
@@ -390,14 +620,14 @@ def generate_review_draft(clinic_name: str, category: Union[ClinicCategory, str]
         review_text = response.choices[0].message.content.strip().strip('"').strip("'")
         if review_text and len(review_text) > 20:
             return review_text
-        return generate_combinatorial_review(clinic_name, cat_key, clean_service)
+        return generate_combinatorial_review(clinic_name, cat_key, clean_service, doctor_name)
     except Exception as e:
         # Fallback to combinatorial generator so reviews are ALWAYS unique and SEO-optimized
         print(f"OpenAI generator fallback triggered: {e}")
         err_msg = str(e).lower()
         if "quota" in err_msg or "429" in err_msg or "credit_balance" in err_msg:
             openai_quota_exhausted_until = time.time() + 300
-        return generate_combinatorial_review(clinic_name, cat_key, clean_service)
+        return generate_combinatorial_review(clinic_name, cat_key, clean_service, doctor_name)
 
 def generate_institute_review_draft(institute_name: str, role: Optional[str], rating: int, service_received: Optional[str] = None) -> str:
     """

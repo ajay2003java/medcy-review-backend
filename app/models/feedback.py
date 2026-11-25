@@ -20,5 +20,6 @@ class Feedback(Base):
     selected_services = Column(JSON, nullable=True)
     language = Column(String, nullable=True, default="en")
     service_received = Column(String, nullable=True)
+    doctor_name = Column(String, nullable=True)
 
     clinic = relationship("Clinic", back_populates="feedbacks")

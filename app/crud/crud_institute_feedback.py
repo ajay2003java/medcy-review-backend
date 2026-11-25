@@ -19,7 +19,8 @@ def create_institute_feedback(db: Session, feedback: InstituteFeedbackCreate, ge
         redirected_to_google=redirected,
         question_ratings=feedback.question_ratings,
         selected_services=feedback.selected_services,
-        language=feedback.language or "en"
+        language=feedback.language or "en",
+        doctor_name=feedback.doctor_name
     )
     db.add(db_feedback)
     db.commit()

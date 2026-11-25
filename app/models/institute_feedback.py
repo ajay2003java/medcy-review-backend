@@ -24,5 +24,6 @@ class InstituteFeedback(Base):
     question_ratings = Column(JSON, nullable=True)
     selected_services = Column(JSON, nullable=True)
     language = Column(String, nullable=True, default="en")
+    doctor_name = Column(String, nullable=True)
 
     institute = relationship("Institute", back_populates="feedbacks")
