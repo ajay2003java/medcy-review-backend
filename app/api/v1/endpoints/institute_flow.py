@@ -11,7 +11,7 @@ from app.core.image_resolver import resolve_image_url
 router = APIRouter()
 
 KISHORE_BHAVANA_CLINIC_ID = "b0101010-b010-b010-b010-b01010101010"
-KISHORE_BHAVANA_GOOGLE_URL = "https://search.google.com/local/writereview?placeid=ChIJ_kishore_bhavana_clinic"
+KISHORE_BHAVANA_GOOGLE_URL = "https://www.google.com/maps/search/?api=1&query=Kishore+Bhavana+Clinic"
 
 @router.get("/institute/{qr_identifier}")
 def get_institute_by_qr(qr_identifier: str, db: Session = Depends(get_db)):

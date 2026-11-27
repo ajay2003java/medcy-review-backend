@@ -47,7 +47,7 @@ def get_clinic_by_qr(qr_identifier: str, db: Session = Depends(get_db)):
         ).first()
         
         clinic_id = str(clinic.id) if clinic else "b0101010-b010-b010-b010-b01010101010"
-        google_url = clinic.google_review_url if clinic else "https://search.google.com/local/writereview?placeid=ChIJ_kishore_bhavana_clinic"
+        google_url = clinic.google_review_url if (clinic and clinic.google_review_url) else "https://www.google.com/maps/search/?api=1&query=Kishore+Bhavana+Clinic"
         
         return {
             "id": clinic_id,
